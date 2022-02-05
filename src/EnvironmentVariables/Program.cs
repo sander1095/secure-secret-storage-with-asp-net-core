@@ -1,43 +1,32 @@
+using Database;
+
+using Microsoft.EntityFrameworkCore;
+
+
+// Before running this sample, add an environment variable called "Database" to your system!
+
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(builder.Configuration.GetValue<string>("Database")));
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+MigrateDatabase(app);
+
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseHttpsRedirection();
 
-var summaries = new[]
-{
-    "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-};
-
-app.MapGet("/weatherforecast", () =>
-{
-    var forecast = Enumerable.Range(1, 5).Select(index =>
-       new WeatherForecast
-       (
-           DateTime.Now.AddDays(index),
-           Random.Shared.Next(-20, 55),
-           summaries[Random.Shared.Next(summaries.Length)]
-       ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+app.MapGet("/pizzas", async (PizzaDb db) => await db.Pizzas.ToListAsync());
 
 app.Run();
 
-internal record WeatherForecast(DateTime Date, int TemperatureC, string? Summary)
+static void MigrateDatabase(WebApplication app)
 {
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+    using var scope = app.Services.CreateScope();
+    scope.ServiceProvider.GetRequiredService<PizzaDb>().Database.Migrate();
 }
