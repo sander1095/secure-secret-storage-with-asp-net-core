@@ -16,7 +16,9 @@ builder.Host.ConfigureAppConfiguration((context, config) =>
     }
 });
 
-builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Database4")));
+var connectionString = builder.Configuration.GetConnectionString("Database4");
+
+builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(connectionString);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -6,7 +6,9 @@ using Microsoft.EntityFrameworkCore;
 // To look at all your environment variables, run this in Powershell: Get-ChildItem -Path Env:
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(builder.Configuration.GetValue<string>("Database3")));
+var connectionString = builder.Configuration.GetConnectionString("Database3");
+
+builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(connectionString));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
