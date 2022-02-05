@@ -2,12 +2,11 @@ using Database;
 
 using Microsoft.EntityFrameworkCore;
 
-
-// Before running this sample, add an environment variable called "Database" to your system!
-
+// Before running this sample, add an environment variable called "Database3" to your system!
+// To look at all your environment variables, run this in Powershell: Get-ChildItem -Path Env:
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(builder.Configuration.GetValue<string>("Database")));
+builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(builder.Configuration.GetValue<string>("Database3")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

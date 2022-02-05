@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Database")));
+builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Database2")));
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
