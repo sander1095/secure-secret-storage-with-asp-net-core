@@ -11,7 +11,7 @@ builder.Host.ConfigureAppConfiguration((context, config) =>
     if (!context.HostingEnvironment.IsDevelopment())
     {
         var keyVaultName = context.Configuration.GetValue<string>("KeyVaultName");
-        var keyVaultUri = new Uri($"{keyVaultName}.vault.azure.net");
+        var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net");
         config.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
     }
 });
