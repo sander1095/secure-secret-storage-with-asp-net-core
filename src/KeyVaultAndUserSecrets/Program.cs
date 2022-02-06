@@ -1,13 +1,17 @@
+
 using Azure.Identity;
+
 using Database;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Setup keyvault connection with managed identity if we are running in production
-// Otherwise we use dotnet user secrets locally!
+// Otherwise we use dotnet user secrets locally! 
 builder.Host.ConfigureAppConfiguration((context, config) =>
 {
+    // Comment out this IF statement to grab the connectionstrings/api key from keyvault
     if (!context.HostingEnvironment.IsDevelopment())
     {
         var keyVaultName = context.Configuration.GetValue<string>("KeyVaultName");
@@ -33,6 +37,7 @@ app.UseSwaggerUI();
 app.UseHttpsRedirection();
 
 app.MapGet("/pizzas", async (PizzaDb db) => await db.Pizzas.ToListAsync());
+app.MapGet("/keyvault", (IConfiguration configuration) => configuration.GetValue<string>("SomeExternalApi:ApiKey"));
 
 app.Run();
 
