@@ -52,9 +52,15 @@ static void MigrateDatabase(WebApplication app)
  * At runtime we add a new configuration provider (KeyVault) so we can simply ask for the connectionstring from the KeyVault!
  * You could also look at other options like Hashicorp Vault, AWS Secret Manager, etc..
  * 
+ * Show the keyvault in azure.
+ * 
  * During development we use user-secrets to store our secrets safely (but not encrypted!!!) away from our code.
  * It would be safer to use KeyVault here as well, but then you require an internet connection... so it depends on your scenario.
  * 
  * You can also see the power of managed identities so we can authenticate azure to azure resources without passwords! Neat!
+ *
+ * Explain how that works
+ * 
+ * If time is left over, take a look at the deploy to azure script.
  * 
  */ 
