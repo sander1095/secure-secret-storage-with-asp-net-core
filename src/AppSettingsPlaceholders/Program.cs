@@ -36,6 +36,7 @@ static void MigrateDatabase(WebApplication app)
  * Have a placeholder in appsettings.json and replace that during a deploy with the right value.
  * You now do not have any real secrets in your code, you can replace them during deploy!
  *
+ * Take a look at what I mean here: https://github.com/sander1095/secure-secret-storage-with-asp-net-core/runs/5078224061
  * Reasons against this approach:
  *   - How do you store secrets during development or allow a developer to have different appsettings on their PC?
  *     Put them in appsettings.Development.json and hopefully not commit them? Very tricky!
