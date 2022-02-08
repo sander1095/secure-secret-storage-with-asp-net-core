@@ -31,3 +31,18 @@ static void MigrateDatabase(WebApplication app)
     using var scope = app.Services.CreateScope();
     scope.ServiceProvider.GetRequiredService<PizzaDb>().Database.Migrate();
 }
+
+/*
+ * Explanation: 
+ *   
+ * Use environment variables that are system-wide so none of your configuration is anywhere in your git repo!
+ * Seen a lot in Kubernetes/Docker environments
+ * 
+ * Let's have a look at our environment variables.
+ * 
+ *
+ * Reasons against this approach:
+ *   - Setting this up is a pain..
+ *   - Applications that send crash reports like sending a list of all 
+ *     environment variables to the devs, possibly including your secrets!
+ */ 

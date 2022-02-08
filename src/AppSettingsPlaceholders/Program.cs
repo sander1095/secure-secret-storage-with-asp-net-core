@@ -29,3 +29,15 @@ static void MigrateDatabase(WebApplication app)
     using var scope = app.Services.CreateScope();
     scope.ServiceProvider.GetRequiredService<PizzaDb>().Database.Migrate();
 }
+
+/*
+ * Explanation: 
+ *   
+ * Have a placeholder in appsettings.json and replace that during a deploy with the right value.
+ * You now do not have any real secrets in your code, you can replace them during deploy!
+ *
+ * Reasons against this approach:
+ *   - How do you store secrets during development or allow a developer to have different appsettings on their PC?
+ *     Put them in appsettings.Development.json and hopefully not commit them? Very tricky!
+ *     (Hint: Using user-secret with this approach is.. ok.
+ */ 

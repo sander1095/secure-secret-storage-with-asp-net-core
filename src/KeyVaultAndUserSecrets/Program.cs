@@ -1,6 +1,4 @@
-
-using Azure.Identity;
-
+﻿using Azure.Identity;
 using Database;
 
 using Microsoft.EntityFrameworkCore;
@@ -46,3 +44,17 @@ static void MigrateDatabase(WebApplication app)
     using var scope = app.Services.CreateScope();
     scope.ServiceProvider.GetRequiredService<PizzaDb>().Database.Migrate();
 }
+
+/*
+ * Explanation: 
+ *   
+ * Use the power of the cloud™️ to store your secrets somewhere safe! Also super cheap! (3 cents for 10000 calls)
+ * At runtime we add a new configuration provider (KeyVault) so we can simply ask for the connectionstring from the KeyVault!
+ * You could also look at other options like Hashicorp Vault, AWS Secret Manager, etc..
+ * 
+ * During development we use user-secrets to store our secrets safely (but not encrypted!!!) away from our code.
+ * It would be safer to use KeyVault here as well, but then you require an internet connection... so it depends on your scenario.
+ * 
+ * You can also see the power of managed identities so we can authenticate azure to azure resources without passwords! Neat!
+ * 
+ */ 
