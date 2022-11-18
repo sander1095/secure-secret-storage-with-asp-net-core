@@ -2,22 +2,19 @@
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Adding our own XmlFile provider
 builder.Host.ConfigureAppConfiguration(x =>
 {
     x.AddXmlFile("appsettings.xml", optional: false, reloadOnChange: true);
 });
 
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+AddSwagger(builder);
 
 builder.Services.AddTransient<IConfigurationRoot>(x => builder.Configuration);
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-
-app.UseSwagger();
-app.UseSwaggerUI();
+UseSwagger(app);
 
 // When using WebApplication.CreateBuilder(args), some default configuration providers are set up for you. This endpoint will return them!
 app.MapGet("/default-configuration", (IConfigurationRoot configurationRoot) => configurationRoot.Providers.Take(8).Select(x => x.ToString()));
@@ -33,6 +30,18 @@ app.MapGet("/various-configuration-values", (IConfiguration configuration) => ne
 
 app.UseHttpsRedirection();
 app.Run();
+
+static void UseSwagger(WebApplication app)
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+static void AddSwagger(WebApplicationBuilder builder)
+{
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
+}
 
 
 /*
