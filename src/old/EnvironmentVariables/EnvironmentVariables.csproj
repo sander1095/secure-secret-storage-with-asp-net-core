@@ -4,7 +4,7 @@
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>b5158efa-eeb1-480b-a30b-d8b5c9cb2d64</UserSecretsId>
+    <UserSecretsId>9b987b9e-41c4-4e15-8ea6-0a3fee032db5</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
   </PropertyGroup>
 
@@ -14,7 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Database\Database.csproj" />
+    <ProjectReference Include="..\..\Database\Database.csproj" />
   </ItemGroup>
 
 </Project>
