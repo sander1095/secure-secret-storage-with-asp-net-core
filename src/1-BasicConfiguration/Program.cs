@@ -1,3 +1,5 @@
+// Source: https://github.com/sander1095/secure-secret-storage-with-asp-net-core/
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Host.ConfigureAppConfiguration(x =>
@@ -44,6 +46,6 @@ app.Run();
  * 
  * Let's showcase the default configuration providers
  * Showcase normal configuration
- * Showcase adding XML provider
+ * Showcase adding XML provider with reloadonchange
  * Showcase getting values from differnet providers
  */ 
