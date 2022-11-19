@@ -55,6 +55,6 @@ static void AddSwagger(WebApplicationBuilder builder)
  * 
  * Let's showcase the default configuration providers
  * Showcase normal configuration
- * Showcase adding XML provider with reloadonchange
  * Showcase getting values from differnet providers
+ * Showcase adding XML provider with reloadonchange
  */ 
