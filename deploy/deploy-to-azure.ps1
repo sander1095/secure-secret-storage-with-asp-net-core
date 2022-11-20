@@ -8,7 +8,7 @@ $signedInUser = az ad signed-in-user show | ConvertFrom-Json
 $signedInUserObjectId = $signedInUser.objectId
 $signedInUserPrincipalName = $signedInUser.userPrincipalName
 
-$resourceGroupName = "rg-secret-storage-presentation"
+$resourceGroupName = "rg-secret-storage-presentation2"
 $keyVaultName = "kv-secret-storage"
 $databaseName = "db-pizza"
 $sqlServerName = "sql-secret-storage-presentation2"
@@ -18,8 +18,6 @@ $appServiceName = "as-secret-storage-presentation"
 Write-Host "Creating resource group"
 
 az group create --location westeurope --name $resourceGroupName
-
-Write-Host "Creating Identity"
 
 Write-Host "Create keyvault"
 
