@@ -1,6 +1,12 @@
 // Source: https://github.com/sander1095/secure-secret-storage-with-asp-net-core/
+using System.Net.Security;
+
+using Azure.Core;
 using Azure.Identity;
+using Azure.Security.KeyVault.Secrets;
+
 using Database;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,7 +15,8 @@ var builder = WebApplication.CreateBuilder(args);
 // Otherwise we use dotnet user secrets locally! 
 builder.Host.ConfigureAppConfiguration((context, config) =>
 {
-    // Comment out this IF statement to grab the connectionstrings/api key from keyvault
+    Console.WriteLine($"The current environment is {context.HostingEnvironment.EnvironmentName}");
+    // Comment out this IF statement to grab the connectionstrings from keyvault
     if (!context.HostingEnvironment.IsDevelopment())
     {
         var keyVaultName = context.Configuration.GetValue<string>("KeyVaultName");
@@ -22,6 +29,8 @@ var connectionString = builder.Configuration.GetConnectionString("Database");
 
 builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(connectionString));
 
+builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
+
 AddSwagger(builder);
 
 var app = builder.Build();
@@ -33,6 +42,7 @@ UseSwagger(app);
 app.UseHttpsRedirection();
 
 app.MapGet("/pizzas", async (PizzaDb db) => await db.Pizzas.ToListAsync());
+app.MapGet("/connectionstring", (IConfiguration configuration) => configuration.GetConnectionString("Database"));
 
 app.Run();
 
@@ -55,6 +65,10 @@ static void MigrateDatabase(WebApplication app)
 }
 
 /*
+ * 
+ * PREPARE DEMO: Allow IP address to connect to database!
+ * 
+ * 
  * In this demo, we have a little application that can serve us a list of pizzas from a database.
  * During development, we will use user secrets, but when we deploy our code to production on an Azure App Service, it will use a managed identity to safely talk to the application
  * 
