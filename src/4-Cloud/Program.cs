@@ -1,12 +1,6 @@
 // Source: https://github.com/sander1095/secure-secret-storage-with-asp-net-core/
-using System.Net.Security;
-
-using Azure.Core;
 using Azure.Identity;
-using Azure.Security.KeyVault.Secrets;
-
 using Database;
-
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
