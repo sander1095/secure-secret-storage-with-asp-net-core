@@ -62,6 +62,14 @@ az sql db create `
 
 Write-Host "For full managed identity auth you might still need to add the managed identity user to the database. This is outside of this demo for now"
 
+# https://learn.microsoft.com/en-us/azure/app-service/tutorial-connect-msi-sql-database?tabs=windowsclient%2Cef%2Cdotnet
+#CREATE USER [as-secret-storage-presentation] FROM EXTERNAL PROVIDER;
+#ALTER ROLE db_datareader ADD MEMBER [as-secret-storage-presentation];
+#ALTER ROLE db_datawriter ADD MEMBER [as-secret-storage-presentation];
+#ALTER ROLE db_ddladmin ADD MEMBER [as-secret-storage-presentation];
+#GO
+#Also change the networking rules of the sql server to allow azure connections
+
 Write-Host "Creating app service plan"
 
 az appservice plan create `
