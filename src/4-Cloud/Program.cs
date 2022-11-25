@@ -61,7 +61,8 @@ static void MigrateDatabase(WebApplication app)
 /*
  * 
  * PREPARE DEMO: Allow IP address to connect to database!
- * 
+ * App Service URL: https://as-secret-storage-presentation.azurewebsites.net/swagger
+ * Resource Group: https://portal.azure.com
  * 
  * In this demo, we have a little application that can serve us a list of pizzas from a database.
  * During development, we will use user secrets, but when we deploy our code to production on an Azure App Service, it will use a managed identity to safely talk to the application
@@ -69,7 +70,9 @@ static void MigrateDatabase(WebApplication app)
  * - Show connectionstring in user-secrets locally (data source=.;initial catalog=pizza-db; persist security info=True;Integrated Security=SSPI;trustServerCertificate=true)
  * - Show connectionstring in appsettings.json (referring to keyvault)
  * 
- * - Show azure keyvault in portal
+ * - show app service has managed identity
+ * - Show azure keyvault in portal and connection to managed identity
  * - show managed identtiy being connected from app service to database
- * - Show that experimental option (you can also run your own sql query)
+ * 
+ * - if time is leftover, show azure app configuration
  */
