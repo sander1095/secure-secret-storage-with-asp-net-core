@@ -63,6 +63,13 @@ static void MigrateDatabase(WebApplication app)
  * PREPARE DEMO: Allow IP address to connect to database!
  * App Service URL: https://as-secret-storage-presentation.azurewebsites.net/swagger
  * Resource Group: https://portal.azure.com
+ *   - keyvault
+ *      - secrets (highlight connectionstring)
+ *      - access policies
+ *   - app service
+ *      - identity
+ *   - database
+ *     - say that with a query we authenticated app service
  * 
  * In this demo, we have a little application that can serve us a list of pizzas from a database.
  * During development, we will use user secrets, but when we deploy our code to production on an Azure App Service, it will use a managed identity to safely talk to the application
