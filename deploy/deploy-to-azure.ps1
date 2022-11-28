@@ -8,22 +8,16 @@ $signedInUser = az ad signed-in-user show | ConvertFrom-Json
 $signedInUserObjectId = $signedInUser.objectId
 $signedInUserPrincipalName = $signedInUser.userPrincipalName
 
-$resourceGroupName = "rg-secret-storage-presentation"
-$managedIdentityName = "mi-secret-storage-presentation"
+$resourceGroupName = "rg-secret-storage-presentation2"
 $keyVaultName = "kv-secret-storage"
 $databaseName = "db-pizza"
-$sqlServerName = "sql-secret-storage-presentation"
+$sqlServerName = "sql-secret-storage-presentation2"
+$appServicePlanName = "asp-secret-storage-presentation"
+$appServiceName = "as-secret-storage-presentation"
 
 Write-Host "Creating resource group"
 
 az group create --location westeurope --name $resourceGroupName
-
-Write-Host "Creating Identity"
-
-# Create the managed identity
-$identity = az identity create `
-    --name $managedIdentityName `
-    --resource-group $resourceGroupName | ConvertFrom-Json
 
 Write-Host "Create keyvault"
 
@@ -34,30 +28,14 @@ az keyvault create `
     --location westeurope `
     --enabled-for-deployment true `
     --enabled-for-template-deployment true `
-    --enable-soft-delete true `
     --sku standard
-
-Write-Host "Assigning KeyVault permissions for Managed Identity"
-
-az keyvault set-policy `
-    --name $keyVaultName `
-    --certificate-permissions get list `
-    --key-permissions get list `
-    --secret-permissions get list `
-    --resource-group $resourceGroupName `
-    --object-id $identity.principalId 
 
 Write-Host "Setting secrets in keyvault"
 
 az keyvault secret set `
-    --name "ConnectionStrings--Database4" `
-    --value "Server=tcp:sql-secret-storage-presentation.database.windows.net,1433;Initial Catalog=db-pizza;Persist Security Info=False;Authentication=Active Directory Default;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" `
+    --name "ConnectionStrings--Database" `
+    --value "Server=tcp:sql-secret-storage-presentation2.database.windows.net,1433;Initial Catalog=db-pizza;Persist Security Info=False;Authentication=Active Directory Default;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" `
     --vault-name $keyVaultName
-
-az keyvault secret set `
-    --vault-name $keyVaultName `
-    --name "SomeExternalApi--ApiKey" `
-    --value "h*5*ggh4*FGfg4"
 
 Write-Host "Create SQL Server"
 
@@ -68,10 +46,6 @@ az sql server create `
     --external-admin-principal-type User `
     --external-admin-name $signedInUserPrincipalName `
     --external-admin-sid $signedInUserObjectId `
-    # Can't get this to work..
-    #--user-assigned-identity-id $identity.id `
-    #--identity-type UserAssigned `
-    #--pid $identity.id
 
 Write-Host "You still need to assign the Managed Identity in SQL Server yourself! Also configure RBAC!"
 
@@ -83,7 +57,37 @@ az sql db create `
     --server $sqlServerName `
     --collation SQL_Latin1_General_CP1_CI_AS `
     --edition Basic `
-    --service-objective Basic
+    --service-objective Basic `
     --zone-redundant false
 
 Write-Host "For full managed identity auth you might still need to add the managed identity user to the database. This is outside of this demo for now"
+
+# https://learn.microsoft.com/en-us/azure/app-service/tutorial-connect-msi-sql-database?tabs=windowsclient%2Cef%2Cdotnet
+#CREATE USER [as-secret-storage-presentation] FROM EXTERNAL PROVIDER;
+#ALTER ROLE db_datareader ADD MEMBER [as-secret-storage-presentation];
+#ALTER ROLE db_datawriter ADD MEMBER [as-secret-storage-presentation];
+#ALTER ROLE db_ddladmin ADD MEMBER [as-secret-storage-presentation];
+#GO
+#Also change the networking rules of the sql server to allow azure connections
+
+Write-Host "Creating app service plan"
+
+az appservice plan create `
+    --name $appServicePlanName `
+    --resource-group $resourceGroupName `
+    --sku B1
+
+
+Write-Host "Creating app service"
+
+az webapp create `
+    --name $appServiceName `
+    --resource-group $resourceGroupName `
+    --plan $appServicePlanName `
+    --runtime DOTNET:6.0
+
+Write-Host "Assign SYSTEM identity to app service"
+$webappidentity = az webapp identity assign --name $appServiceName --resource-group $resourceGroupName | ConvertFrom-Json
+
+Write-Host "Allow SYSTEM identity to access key vault"
+az keyvault set-policy --name $keyVaultName --object-id $webappidentity.principalId --secret-permissions get list
