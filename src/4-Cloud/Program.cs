@@ -5,6 +5,8 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.WebHost.UseUrls("https://localhost:7226", "http://localhost:5226");
+
 // Setup keyvault connection with managed identity if we are running in production
 // Otherwise we use dotnet user secrets locally! 
 builder.Host.ConfigureAppConfiguration((context, config) =>
