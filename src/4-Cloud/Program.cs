@@ -1,6 +1,8 @@
 // Source: https://github.com/sander1095/secure-secret-storage-with-asp-net-core/
 using Azure.Identity;
+
 using Database;
+
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -8,18 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.WebHost.UseUrls("https://localhost:7226", "http://localhost:5226");
 
 // Setup keyvault connection with managed identity if we are running in production
-// Otherwise we use dotnet user secrets locally! 
-builder.Host.ConfigureAppConfiguration((context, config) =>
+// Otherwise we use dotnet user secrets locally!
+
+Console.WriteLine($"The current environment is {builder.Environment.EnvironmentName}");
+// Comment out this IF statement to grab the connectionstrings from keyvault
+if (!builder.Environment.IsDevelopment())
 {
-    Console.WriteLine($"The current environment is {context.HostingEnvironment.EnvironmentName}");
-    // Comment out this IF statement to grab the connectionstrings from keyvault
-    if (!context.HostingEnvironment.IsDevelopment())
-    {
-        var keyVaultName = context.Configuration.GetValue<string>("KeyVaultName");
-        var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net");
-        config.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
-    }
-});
+    var keyVaultName = builder.Configuration.GetValue<string>("KeyVaultName");
+    var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net");
+    builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
+}
 
 var connectionString = builder.Configuration.GetConnectionString("Database");
 

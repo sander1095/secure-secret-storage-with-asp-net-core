@@ -15,17 +15,17 @@ public class BackgroundJob : BackgroundService
         _optionsMonitor = optionsMonitor;
         _logger = logger;
     }
-  
+
     protected override Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _changeListener = _optionsMonitor
-            .OnChange(x => _logger.LogInformation(
-                "ExternalApiSettings changed! New value: {externalApiSettings}", 
+            ?.OnChange(x => _logger.LogInformation(
+                "ExternalApiSettings changed! New value: {externalApiSettings}",
                 System.Text.Json.JsonSerializer.Serialize(x)));
 
         return Task.CompletedTask;
     }
-    public Task StopAsync(CancellationToken cancellationToken)
+    public override Task StopAsync(CancellationToken cancellationToken)
     {
         _changeListener?.Dispose();
 

@@ -3,10 +3,7 @@
 var builder = WebApplication.CreateBuilder(args);
 
 // Adding our own XmlFile provider
-builder.Host.ConfigureAppConfiguration(x =>
-{
-    x.AddXmlFile("appsettings.xml", optional: false, reloadOnChange: true);
-});
+builder.Configuration.AddXmlFile("appsettings.xml", optional: false, reloadOnChange: true);
 
 AddSwagger(builder);
 
