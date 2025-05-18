@@ -23,7 +23,11 @@ if (!builder.Environment.IsDevelopment())
 
 var connectionString = builder.Configuration.GetConnectionString("Database");
 
-builder.Services.AddDbContext<PizzaDb>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<PizzaDb>(static (sp, options) =>
+{
+    var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Database");
+    options.UseSqlServer(connectionString, x => x.EnableRetryOnFailure());
+});
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
 

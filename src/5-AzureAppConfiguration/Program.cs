@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.WebHost.UseUrls("https://localhost:7226", "http://localhost:5226");
+builder.WebHost.UseUrls("https://localhost:7227", "http://localhost:5227");
 
 // Setup Azure App Configuration connection with managed identity if we are running in production
 // Otherwise we use dotnet user secrets locally!
@@ -21,16 +21,16 @@ if (!builder.Environment.IsDevelopment())
     builder.Configuration.AddAzureAppConfiguration(x =>
     {
         x.Connect(appConfigurationUri, new DefaultAzureCredential());
-
+        x.ConfigureKeyVault(x => x.SetCredential(new DefaultAzureCredential()));
         x.ConfigureRefresh(x => x.Register("Sentinel"));
     });
 }
 
 // Azure App Configuration retrieves this from the linked Key Vault.
-builder.Services.AddDbContext<PizzaDb>((sp, options) =>
+builder.Services.AddDbContext<PizzaDb>(static (sp, options) =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("Database");
-    options.UseSqlServer(connectionString);
+    var connectionString = sp.GetRequiredService<IConfiguration>().GetConnectionString("Database");
+    options.UseSqlServer(connectionString, x => x.EnableRetryOnFailure()); 
 });
 
 builder.Services.AddSingleton<IConfiguration>(builder.Configuration);
