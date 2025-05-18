@@ -16,8 +16,8 @@ Console.WriteLine($"The current environment is {builder.Environment.EnvironmentN
 // Comment out this IF statement to grab the connectionstrings from keyvault
 if (!builder.Environment.IsDevelopment())
 {
-    var keyVaultName = builder.Configuration.GetValue<string>("KeyVaultName");
-    var keyVaultUri = new Uri($"https://{keyVaultName}.vault.azure.net");
+    var keyVaultUriRaw = builder.Configuration.GetValue<string>("KeyVaultUri") ?? throw new Exception("Missing KeyVaultUri");
+    var keyVaultUri = new Uri(keyVaultUriRaw);
     builder.Configuration.AddAzureKeyVault(keyVaultUri, new DefaultAzureCredential());
 }
 
